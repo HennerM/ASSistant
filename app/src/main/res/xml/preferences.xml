@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="General"
+        android:key="pref_general"
+        >
+        <MultiSelectListPreference
+            android:key="pref_relevant_calendars"
+            android:title="@string/pref_title_relevant_calendars"
+            android:summary="@string/pref_summary_relevant_calendars"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

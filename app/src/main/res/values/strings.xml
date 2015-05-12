@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ASSistant</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_new">New Recurring action</string>
+    <string name="ui_action_title">Recurring Action title</string>
+    <string name="ui_action_firstDay">Start of recurring action</string>
+    <string name="ui_action_hoursPerWeek">hours per Week</string>
+    <string name="ui_action_new">New Recurring Action</string>
+    <string name="abc_action_mode_delete">Delete</string>
+    <string name="activity_settings">Settings</string>
+    <string name="pref_title_relevant_calendars">Relevant calendars</string>
+    <string name="pref_summary_relevant_calendars">which calendars are relevant for generating the appointments</string>
+    <string name="default_preferences">pref_default</string>
+</resources>
