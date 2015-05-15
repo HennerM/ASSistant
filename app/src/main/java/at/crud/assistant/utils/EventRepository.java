@@ -57,7 +57,6 @@ public class EventRepository {
         selection.append(")");
 
         Cursor eventCursor = cr.query(CONTENT_URI, EVENT_PROJECTION, selection.toString(), ids, null);
-
         return getListFromCursor(eventCursor);
     }
 
@@ -102,6 +101,7 @@ public class EventRepository {
         } else {
             eventList = new ArrayList<>();
         }
+        cursor.close();
         return eventList;
     }
 

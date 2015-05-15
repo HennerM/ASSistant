@@ -148,6 +148,14 @@ public class MainActivity extends ActionBarActivity {
                     PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                     PackageManager.DONT_KILL_APP);
         }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            databaseHelper.close();
+            recurringActionAdapter = null;
+            recyclerView = null;
+        }
     }
 
 

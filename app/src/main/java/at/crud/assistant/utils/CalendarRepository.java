@@ -55,7 +55,7 @@ public class CalendarRepository {
         } else {
             calendars = new String[0];
         }
-
+        cursor.close();
         return calendars;
     }
 
@@ -73,7 +73,7 @@ public class CalendarRepository {
         } else {
             calendarIds = new String[0];
         }
-
+        cursor.close();
         return calendarIds;
     }
 

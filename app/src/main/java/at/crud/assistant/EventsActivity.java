@@ -137,6 +137,15 @@ public class EventsActivity extends ActionBarActivity {
             new LoadEventsBackgroundTask().execute(recurringAction);
         }
 
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            databaseHelper.close();
+            lvEvents = null;
+            recurringAction = null;
+        }
+
+
         private class LoadEventsBackgroundTask extends AsyncTask<RecurringAction, Void, List<Event>> {
 
             @Override

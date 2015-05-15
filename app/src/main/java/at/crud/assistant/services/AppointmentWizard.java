@@ -128,7 +128,7 @@ public class AppointmentWizard {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(WIZARD_NOTIFICATION, mBuilder.build());
-
+        databaseHelper.close();
     }
 
     public void refreshAllActions() {
@@ -137,6 +137,8 @@ public class AppointmentWizard {
             recreateAppointments(actions);
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            databaseHelper.close();
         }
     }
 
@@ -144,6 +146,7 @@ public class AppointmentWizard {
         List<RecurringAction> actionList = new LinkedList<>();
         actionList.add(action);
         recreateAppointments(actionList);
+        databaseHelper.close();
     }
 
     public List<Event> getEventsNextWeekForAction(RecurringAction recAction) {
