@@ -137,4 +137,20 @@ public class RecurringAction {
             this.minimalDurationMinutes = minimalDurationMinutes;
         }
     }
+
+    public Collection<Event> getEvents() {
+        return events;
+    }
+
+    public void removeEvent(Event event) {
+        events.remove(event);
+    }
+
+    public void addEvent(Event event) {
+        events.add(event);
+    }
+
+    public void setEvents(Collection<Event> events) {
+        this.events = events;
+    }
 }

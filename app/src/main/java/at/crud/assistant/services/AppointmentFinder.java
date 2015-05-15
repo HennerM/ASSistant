@@ -1,5 +1,7 @@
 package at.crud.assistant.services;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,17 +28,7 @@ public class AppointmentFinder {
         this.calendarIds = calendarIds;
     }
 
-    public int createAppointmentsForTimeSpan(RecurringAction recurringAction, Date startDate, Date endDate) {
-        List<Event> eventList = findPossibleAppointments(recurringAction, startDate, endDate);
-        int eventsCreated = 0;
-        for (Event event: eventList) {
-            // TODO use prefered calendar
-            int calendarId = 1;
-            eventRepository.insert(EventFactory.createContentValueFromEvent(recurringAction.getId(), event, calendarId));
-            eventsCreated++;
-        }
-        return eventsCreated;
-    }
+
 
     public List<Event> findPossibleAppointments(RecurringAction recurringAction, Date startDate, Date endDate) {
         List<CalendarDay> availableDays = getAvailableDays(recurringAction, startDate, endDate);

@@ -9,7 +9,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 
 public class Event {
 
-    @DatabaseField
+    @DatabaseField( id = true)
     protected String uri;
 
     protected String title;
@@ -61,6 +61,14 @@ public class Event {
 
     public void setAllDay(boolean allDay) {
         this.allDay = allDay;
+    }
+
+    public RecurringAction getRecurringAction() {
+        return recurringAction;
+    }
+
+    public void setRecurringAction(RecurringAction recurringAction) {
+        this.recurringAction = recurringAction;
     }
 
     @Override

@@ -3,7 +3,9 @@ package at.crud.assistant.services;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
@@ -12,6 +14,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -24,6 +27,7 @@ import at.crud.assistant.models.Event;
 import at.crud.assistant.models.RecurringAction;
 import at.crud.assistant.utils.CalendarRepository;
 import at.crud.assistant.utils.DatabaseHelper;
+import at.crud.assistant.utils.EventFactory;
 import at.crud.assistant.utils.EventRepository;
 
 
@@ -36,11 +40,12 @@ public class AppointmentWizard {
     private Context context;
     private AppointmentFinder appointmentFinder;
     private DatabaseHelper databaseHelper;
+    private EventRepository eventRepository;
 
     public AppointmentWizard(Context context) {
         this.context = context;
         ContentResolver contentResolver = context.getContentResolver();
-        EventRepository eventRepository = new EventRepository(contentResolver, new CalendarRepository(contentResolver));
+        eventRepository = new EventRepository(contentResolver, new CalendarRepository(contentResolver));
         FreetimeCalculator freetimeCalculator = new FreetimeCalculator();
         appointmentFinder = new AppointmentFinder(getCalendarIds(), eventRepository, freetimeCalculator);
         databaseHelper = new DatabaseHelper(context);
@@ -56,13 +61,47 @@ public class AppointmentWizard {
         }
     }
 
+    protected int createAppointmentsForTimeSpan(RecurringAction recurringAction, Date startDate, Date endDate) {
+        List<Event> eventList = appointmentFinder.findPossibleAppointments(recurringAction, startDate, endDate);
+        int eventsCreated = 0;
+        try {
+            Dao<Event, String> eventDao = databaseHelper.getEventDao();
+            Dao<RecurringAction, Integer> recurringActionDao = databaseHelper.getRecurringActionDao();
+            for (Event event: eventList) {
+                // TODO use prefered calendar
+                int calendarId = 1;
+
+                Uri cUri = eventRepository.insert(EventFactory.createContentValueFromEvent(recurringAction.getId(), event, calendarId));
+                event.setUri(cUri);
+                event.setRecurringAction(recurringAction);
+                eventDao.createOrUpdate(event);
+                recurringAction.addEvent(event);
+
+                eventsCreated++;
+            }
+            recurringActionDao.createOrUpdate(recurringAction);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return eventsCreated;
+
+    }
+
+    protected void removeOldAppointments(RecurringAction recurringAction) {
+        for (Event event: recurringAction.getEvents()) {
+            eventRepository.deleteEvent(event.getUri());
+            recurringAction.removeEvent(event);
+        }
+    }
+
     public void recreateAppointments(List<RecurringAction> actions) {
-        // TODO delete old Appointments
         Date startDate = getStartDate();
         Date endDate = getEndDate(startDate, OUTLOOK_DAYS);
         int nrOfAppointments = 0;
         for (RecurringAction recurringAction : actions) {
-            nrOfAppointments += appointmentFinder.createAppointmentsForTimeSpan(recurringAction, startDate, endDate);
+            removeOldAppointments(recurringAction);
+            nrOfAppointments += createAppointmentsForTimeSpan(recurringAction, startDate, endDate);
         }
 
         NotificationCompat.Builder mBuilder =
@@ -93,13 +132,8 @@ public class AppointmentWizard {
     }
 
     public List<Event> getEventsNextWeekForAction(RecurringAction recAction) {
-        Calendar fromDate = Calendar.getInstance();
-        fromDate.add(Calendar.DATE, 1);
-        CalendarUtil.setToMidnight(fromDate);
-        Date tomorrow = new Date(fromDate.getTimeInMillis());
-        fromDate.add(Calendar.DATE, 6);
-        Date nextWeek = new Date(fromDate.getTimeInMillis());
-        return appointmentFinder.findPossibleAppointments(recAction, tomorrow, nextWeek);
+        Date startDate = getStartDate();
+        return appointmentFinder.findPossibleAppointments(recAction,startDate , getEndDate(startDate, OUTLOOK_DAYS));
     }
 
     private Date getStartDate() {

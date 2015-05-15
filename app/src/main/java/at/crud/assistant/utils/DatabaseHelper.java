@@ -22,6 +22,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private static final String DATABASE_NAME = "assistant.db";
     private static final int DATABASE_VERSION = 2;
     private Dao<RecurringAction, Integer> recurringActionDao = null;
+    private Dao<Event, String> eventDao = null;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -65,5 +66,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void close() {
         super.close();
         recurringActionDao = null;
+    }
+
+    public Dao<Event, String> getEventDao() throws SQLException{
+        if (eventDao == null) {
+            eventDao = getDao(Event.class);
+        }
+        return eventDao;
     }
 }

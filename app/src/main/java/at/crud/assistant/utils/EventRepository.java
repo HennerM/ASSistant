@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
+import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -106,6 +107,11 @@ public class EventRepository {
 
     public Uri insert(ContentValues eventValues) {
         return cr.insert(CalendarContract.Events.CONTENT_URI, eventValues);
+    }
+
+    public void deleteEvent(Uri uri) {
+        Log.d("EventRepository", uri.toString());
+        cr.delete(uri, null, null);
     }
 
 
