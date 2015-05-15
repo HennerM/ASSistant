@@ -120,6 +120,7 @@ public class MainActivity extends ActionBarActivity {
         public void onClick(View v, RecurringAction element) {
             RecurringAction recurringAction = element;
             Intent intent = new Intent(getActivity(), EventsActivity.class);
+            intent.setAction(EditActivity.EDIT_ACTION);
             intent.putExtra(EventsActivity.INTENT_EXTRA_RECURRING_ACTION_ID, recurringAction.getId());
             getActivity().startActivityForResult(intent, EventsActivity.VIEW_REQUEST_CODE);
         }

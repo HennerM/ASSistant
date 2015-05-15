@@ -29,7 +29,10 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
     public static final String EXTRA_RECURRINGACTION = "recurringAction";
     public static final int NEW_ACTION_REQUEST = 1;
     public static final int EDIT_ACTION_REQUEST = 2;
+    public static final String NEW_ACTION = "new_action";
+    public static final String EDIT_ACTION = "edit_action";
     public static final int RESULT_DELETED = 4;
+
     protected TextView dateTextView;
     protected EditText etTitle;
     protected EditText etHours;
@@ -56,7 +59,7 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
     private RecurringAction getRecurringAction() {
         Bundle extras = getIntent().getExtras();
         RecurringAction recAction;
-        if (extras != null ) {
+        if (extras != null && getIntent().getAction().equals(EDIT_ACTION)) {
             int raId = extras.getInt(EXTRA_RECURRINGACTION);
             try {
                 recAction = databaseHelper.getRecurringActionDao().queryForId(raId);

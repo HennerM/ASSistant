@@ -17,5 +17,6 @@ public class WizardService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         AppointmentWizard wizard = new AppointmentWizard(this);
         wizard.doMagic();
+        stopSelf();
     }
 }
