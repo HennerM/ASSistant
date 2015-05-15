@@ -144,8 +144,10 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
 
             return true;
         } catch (NumberFormatException e) {
+            e.printStackTrace();
             return false;
         } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
 

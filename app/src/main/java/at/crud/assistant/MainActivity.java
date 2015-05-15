@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import at.crud.assistant.models.RecurringAction;
@@ -103,7 +104,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         private List<RecurringAction> getRecurringActions() {
-            List<RecurringAction> recurringActionList = null;
+            List<RecurringAction> recurringActionList = new LinkedList<>();
             try {
                 recurringActionList = databaseHelper.getRecurringActionDao().queryForAll();
                 if (recurringActionList.size() > 0) {
@@ -116,8 +117,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         public void refreshList() {
-            recurringActionAdapter = new RecurringActionAdapter(getRecurringActions(), this);
-            recyclerView.setAdapter(recurringActionAdapter);
+            List<RecurringAction> recurringActions = getRecurringActions();
+            if (recurringActions.size() > 0) {
+                recurringActionAdapter = new RecurringActionAdapter(getRecurringActions(), this);
+                recyclerView.setAdapter(recurringActionAdapter);
+            }
         }
 
 
