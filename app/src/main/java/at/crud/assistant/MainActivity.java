@@ -1,7 +1,9 @@
 package at.crud.assistant;
 
 import android.app.Fragment;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
@@ -104,6 +106,9 @@ public class MainActivity extends ActionBarActivity {
             List<RecurringAction> recurringActionList = null;
             try {
                 recurringActionList = databaseHelper.getRecurringActionDao().queryForAll();
+                if (recurringActionList.size() > 0) {
+                    enableReceiver();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -120,10 +125,26 @@ public class MainActivity extends ActionBarActivity {
         public void onClick(View v, RecurringAction element) {
             RecurringAction recurringAction = element;
             Intent intent = new Intent(getActivity(), EventsActivity.class);
-            intent.setAction(EditActivity.EDIT_ACTION);
             intent.putExtra(EventsActivity.INTENT_EXTRA_RECURRING_ACTION_ID, recurringAction.getId());
             getActivity().startActivityForResult(intent, EventsActivity.VIEW_REQUEST_CODE);
         }
+
+        private void enableReceiver() {
+            ComponentName receiver = new ComponentName(getActivity(), BootReceiver.class);
+            PackageManager pm = getActivity().getPackageManager();
+            pm.setComponentEnabledSetting(receiver,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP);
+        }
+
+        private void disableReceiver() {
+            ComponentName receiver = new ComponentName(getActivity(), BootReceiver.class);
+            PackageManager pm = getActivity().getPackageManager();
+            pm.setComponentEnabledSetting(receiver,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP);
+        }
     }
+
 
 }

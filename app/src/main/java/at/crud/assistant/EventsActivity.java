@@ -63,6 +63,7 @@ public class EventsActivity extends ActionBarActivity {
             case R.id.action_edit:
                 if (recurringActionId != 0) {
                     intent = new Intent(this, EditActivity.class);
+                    intent.setAction(EditActivity.EDIT_ACTION);
                     intent.putExtra(EditActivity.EXTRA_RECURRINGACTION, recurringActionId);
                     startActivityForResult(intent, EditActivity.EDIT_ACTION_REQUEST);
                 }

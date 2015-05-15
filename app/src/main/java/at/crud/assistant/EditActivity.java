@@ -3,6 +3,8 @@ package at.crud.assistant;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -59,7 +61,7 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
     private RecurringAction getRecurringAction() {
         Bundle extras = getIntent().getExtras();
         RecurringAction recAction;
-        if (extras != null && getIntent().getAction().equals(EDIT_ACTION)) {
+        if (getIntent().getAction() != null && getIntent().getAction().equals(EDIT_ACTION)) {
             int raId = extras.getInt(EXTRA_RECURRINGACTION);
             try {
                 recAction = databaseHelper.getRecurringActionDao().queryForId(raId);

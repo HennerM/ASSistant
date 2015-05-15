@@ -26,7 +26,7 @@ public class BootReceiver extends BroadcastReceiver {
             Intent receiverIntent = new Intent(context, BootReceiver.class);
             PendingIntent alarmIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_ALARM, receiverIntent, 0);
             alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    AlarmManager.INTERVAL_DAY,
+                    0,
                     AlarmManager.INTERVAL_DAY, alarmIntent);
         }
 

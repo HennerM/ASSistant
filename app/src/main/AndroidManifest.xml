@@ -18,11 +18,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditActivity" android:label="@string/ui_action_new" android:parentActivityName=".MainActivity" />
-        <activity android:name=".EventsActivity" android:label="Events" />
+        <activity android:name=".EditActivity" android:label="@string/ui_action_new"  />
+        <activity android:name=".EventsActivity" android:label="Events" android:parentActivityName=".MainActivity" />
         <activity android:name=".SettingsActivity" android:label="@string/activity_settings" android:parentActivityName=".MainActivity" />
         
         <service android:name=".WizardService" />
+
+        <receiver android:name=".BootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
