@@ -1,10 +1,5 @@
 package at.crud.assistant.utils;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +7,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import at.crud.assistant.EditActivity;
-import at.crud.assistant.MainActivity;
 import at.crud.assistant.R;
 import at.crud.assistant.models.RecurringAction;
 

@@ -11,6 +11,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
+import at.crud.assistant.models.Event;
 import at.crud.assistant.models.RecurringAction;
 
 /**
@@ -19,7 +20,7 @@ import at.crud.assistant.models.RecurringAction;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "assistant.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private Dao<RecurringAction, Integer> recurringActionDao = null;
 
     public DatabaseHelper(Context context) {
@@ -31,6 +32,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             Log.i(DatabaseHelper.class.getName(), "onCreate");
             TableUtils.createTable(connectionSource, RecurringAction.class);
+            TableUtils.createTable(connectionSource, Event.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -43,6 +45,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");
             TableUtils.dropTable(connectionSource, RecurringAction.class, true);
+            TableUtils.dropTable(connectionSource, Event.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(database, connectionSource);
         } catch (SQLException e) {

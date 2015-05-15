@@ -1,9 +1,16 @@
 package at.crud.assistant.models;
 
+import android.net.Uri;
+
 import java.text.DateFormat;
 import java.util.Date;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 
 public class Event {
+
+    @DatabaseField
+    protected String uri;
 
     protected String title;
 
@@ -13,6 +20,16 @@ public class Event {
 
     protected boolean allDay;
 
+    @DatabaseField( foreign = true )
+    private RecurringAction recurringAction;
+
+    public Uri getUri() {
+        return Uri.parse(uri);
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri.toString();
+    }
 
     public String getTitle() {
         return title;

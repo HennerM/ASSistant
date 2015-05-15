@@ -1,8 +1,12 @@
 package at.crud.assistant.models;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RecurringAction {
 
@@ -24,6 +28,8 @@ public class RecurringAction {
     @DatabaseField
     private float hoursPerWeek;        // TODO hoursPerWeek refactoren
 
+    @ForeignCollectionField
+    private Collection<Event> events;
 
     private Settings settings = new Settings();
 
