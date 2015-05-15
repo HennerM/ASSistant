@@ -26,13 +26,16 @@ public class AppointmentFinder {
         this.calendarIds = calendarIds;
     }
 
-    public void createAppointmentsForTimeSpan(RecurringAction recurringAction, Date startDate, Date endDate) {
+    public int createAppointmentsForTimeSpan(RecurringAction recurringAction, Date startDate, Date endDate) {
         List<Event> eventList = findPossibleAppointments(recurringAction, startDate, endDate);
+        int eventsCreated = 0;
         for (Event event: eventList) {
             // TODO use prefered calendar
             int calendarId = 1;
             eventRepository.insert(EventFactory.createContentValueFromEvent(recurringAction.getId(), event, calendarId));
+            eventsCreated++;
         }
+        return eventsCreated;
     }
 
     public List<Event> findPossibleAppointments(RecurringAction recurringAction, Date startDate, Date endDate) {

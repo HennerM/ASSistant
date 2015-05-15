@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import at.crud.assistant.models.RecurringAction;
+import at.crud.assistant.services.AppointmentWizard;
 import at.crud.assistant.utils.DatabaseHelper;
 
 
@@ -132,6 +133,15 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
             recurringAction.setTitle(etTitle.getText().toString());
             recurringAction.setHoursPerWeek(Float.parseFloat(etHours.getText().toString()));
             databaseHelper.getRecurringActionDao().createOrUpdate(recurringAction);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AppointmentWizard ap = new AppointmentWizard(EditActivity.this);
+                    ap.refreshAction(recurringAction);
+                }
+            }).run();
+
             return true;
         } catch (NumberFormatException e) {
             return false;
