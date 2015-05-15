@@ -41,6 +41,8 @@ public class AppointmentWizard {
     private AppointmentFinder appointmentFinder;
     private DatabaseHelper databaseHelper;
     private EventRepository eventRepository;
+    private Dao<Event, String> eventDao;
+    private Dao<RecurringAction, Integer> recurringActionDao;
 
     public AppointmentWizard(Context context) {
         this.context = context;
@@ -49,6 +51,12 @@ public class AppointmentWizard {
         FreetimeCalculator freetimeCalculator = new FreetimeCalculator();
         appointmentFinder = new AppointmentFinder(getCalendarIds(), eventRepository, freetimeCalculator);
         databaseHelper = new DatabaseHelper(context);
+        try {
+            eventDao  = databaseHelper.getEventDao();
+            recurringActionDao= databaseHelper.getRecurringActionDao();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     protected String[] getCalendarIds() {
@@ -65,8 +73,6 @@ public class AppointmentWizard {
         List<Event> eventList = appointmentFinder.findPossibleAppointments(recurringAction, startDate, endDate);
         int eventsCreated = 0;
         try {
-            Dao<Event, String> eventDao = databaseHelper.getEventDao();
-            Dao<RecurringAction, Integer> recurringActionDao = databaseHelper.getRecurringActionDao();
             for (Event event: eventList) {
                 // TODO use prefered calendar
                 int calendarId = 1;
@@ -75,11 +81,8 @@ public class AppointmentWizard {
                 event.setUri(cUri);
                 event.setRecurringAction(recurringAction);
                 eventDao.createOrUpdate(event);
-                recurringAction.addEvent(event);
-
                 eventsCreated++;
             }
-            recurringActionDao.createOrUpdate(recurringAction);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -89,9 +92,21 @@ public class AppointmentWizard {
     }
 
     protected void removeOldAppointments(RecurringAction recurringAction) {
-        for (Event event: recurringAction.getEvents()) {
+        Collection<Event> events = recurringAction.getEvents();
+        for (Event event: events) {
             eventRepository.deleteEvent(event.getUri());
             recurringAction.removeEvent(event);
+            event.setRecurringAction(null);
+            try {
+                eventDao.delete(event);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            recurringActionDao.update(recurringAction);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -151,7 +166,6 @@ public class AppointmentWizard {
     }
 
     private List<RecurringAction> getActiveActions() throws SQLException {
-        Dao<RecurringAction, Integer> recurringActionDao = databaseHelper.getRecurringActionDao();
         QueryBuilder<RecurringAction, Integer> queryBuilder = recurringActionDao.queryBuilder();
 
         queryBuilder.where().le("firstDay", getStartDate());

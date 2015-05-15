@@ -66,6 +66,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void close() {
         super.close();
         recurringActionDao = null;
+        eventDao = null;
     }
 
     public Dao<Event, String> getEventDao() throws SQLException{

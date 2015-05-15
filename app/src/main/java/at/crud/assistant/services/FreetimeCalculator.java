@@ -49,6 +49,7 @@ public class FreetimeCalculator {
 
                 }
             }
+
             if (!overlapping) {
                 return calendarIterator;
             }
