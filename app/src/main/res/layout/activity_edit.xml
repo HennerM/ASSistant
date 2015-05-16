@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:rsb="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp">
@@ -43,6 +44,22 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/etHours" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/ui_action_minMaxDuration"
+        android:id="@+id/textView4" />
+
+    <com.yahoo.mobile.client.android.util.RangeSeekBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        rsb:absoluteMinValue="0"
+        rsb:absoluteMaxValue="0"
+
+        android:id="@+id/minMaxDuration"
+        />
 
 
 </LinearLayout>

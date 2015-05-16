@@ -21,7 +21,7 @@ import at.crud.assistant.models.RecurringActionSettings;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "assistant.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private Dao<RecurringAction, Integer> recurringActionDao = null;
     private Dao<Event, String> eventDao = null;
     private Dao<RecurringActionSettings, Integer> settingsDao = null;

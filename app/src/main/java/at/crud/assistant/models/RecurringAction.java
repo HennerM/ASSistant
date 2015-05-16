@@ -4,6 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -27,9 +28,9 @@ public class RecurringAction {
 
 
     @ForeignCollectionField
-    private Collection<Event> events;
+    private Collection<Event> events = new ArrayList<>();
 
-    @DatabaseField( foreign = true)
+    @DatabaseField( foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
     private RecurringActionSettings settings = new RecurringActionSettings();
 
     public RecurringAction() {
