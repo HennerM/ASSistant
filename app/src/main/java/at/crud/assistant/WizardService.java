@@ -1,5 +1,6 @@
 package at.crud.assistant;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
@@ -9,6 +10,7 @@ import at.crud.assistant.services.AppointmentWizard;
 
 public class WizardService extends IntentService {
 
+    public static final long INTERVALL_SECONDS = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 
     public WizardService() {
         super("WizardService");
