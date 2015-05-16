@@ -21,7 +21,8 @@ public class CalendarUtil {
     }
 
     public static boolean overlapping(Calendar start, Calendar end, Calendar compareStart, Calendar compareEnd) {
-        return (compareStart.before(start) && compareEnd.after(start)) ||
+        return  (start.equals(compareStart) || end.equals(compareEnd)) ||
+                (compareStart.before(start) && compareEnd.after(start)) ||
                 (compareStart.after(start) && compareEnd.before(end)) ||
                 (compareStart.before(end) && compareEnd.after(end));
     }
