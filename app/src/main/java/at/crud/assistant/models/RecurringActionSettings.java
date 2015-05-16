@@ -23,6 +23,9 @@ public class RecurringActionSettings {
     @DatabaseField
     private int maximalDurationMinutes;
 
+    @DatabaseField
+    private float hoursPerWeek;
+
     public int getDayIntervall() {
         return dayIntervall;
     }
@@ -61,5 +64,13 @@ public class RecurringActionSettings {
 
     public void setMaximalDurationMinutes(int maximalDurationMinutes) {
         this.maximalDurationMinutes = maximalDurationMinutes;
+    }
+
+    public float getHoursPerWeek() {
+        return hoursPerWeek;
+    }
+
+    public void setHoursPerWeek(float hoursPerWeek) {
+        this.hoursPerWeek = hoursPerWeek;
     }
 }

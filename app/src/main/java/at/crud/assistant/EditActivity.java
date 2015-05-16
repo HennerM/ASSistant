@@ -80,7 +80,7 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
         dateTextView.setText(DateFormat.getDateFormat(this).format(recurringAction.getFirstDay()));
         dateTextView.setOnClickListener(showDatePickerDialog);
         etTitle.setText(recurringAction.getTitle());
-        etHours.setText(Integer.toString(Math.round(recurringAction.getHoursPerWeek())));
+        etHours.setText(Integer.toString(Math.round(recurringAction.getSettings().getHoursPerWeek())));
     }
 
     private View.OnClickListener showDatePickerDialog = new View.OnClickListener() {
@@ -131,7 +131,7 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
     private boolean validateAndSave() {
         try {
             recurringAction.setTitle(etTitle.getText().toString());
-            recurringAction.setHoursPerWeek(Float.parseFloat(etHours.getText().toString()));
+            recurringAction.getSettings().setHoursPerWeek(Float.parseFloat(etHours.getText().toString()));
             databaseHelper.getRecurringActionDao().createOrUpdate(recurringAction);
 
             new Thread(new Runnable() {

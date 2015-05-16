@@ -6,8 +6,6 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 @DatabaseTable
 public class RecurringAction {
@@ -27,8 +25,6 @@ public class RecurringAction {
     @DatabaseField
     private Date lastDay;
 
-    @DatabaseField
-    private float hoursPerWeek;        // TODO hoursPerWeek refactoren
 
     @ForeignCollectionField
     private Collection<Event> events;
@@ -44,7 +40,7 @@ public class RecurringAction {
     public RecurringAction(String title, Date firstDay, float hoursPerWeek) {
         this.title = title;
         this.firstDay = firstDay;
-        this.hoursPerWeek = hoursPerWeek;
+        this.settings.setHoursPerWeek(hoursPerWeek);
     }
 
     public String getTitle() {
@@ -77,14 +73,6 @@ public class RecurringAction {
 
     public void setLastDay(Date lastDay) {
         this.lastDay = lastDay;
-    }
-
-    public float getHoursPerWeek() {
-        return hoursPerWeek;
-    }
-
-    public void setHoursPerWeek(float hoursPerWeek) {
-        this.hoursPerWeek = hoursPerWeek;
     }
 
     public int getId() {
