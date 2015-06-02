@@ -29,7 +29,6 @@ public class AppointmentFinder {
     }
 
 
-
     public List<Event> findPossibleAppointments(RecurringAction recurringAction, Date startDate, Date endDate) {
         List<CalendarDay> availableDays = getAvailableDays(recurringAction, startDate, endDate);
         return makeAppointments(availableDays, recurringAction);
@@ -62,7 +61,7 @@ public class AppointmentFinder {
         }
 
         for (CalendarDay calDay : dayList) {
-            float percentage = ((float)calDay.getMinutesAvailable()) / (float)availableMinutesOverall;
+            float percentage = ((float) calDay.getMinutesAvailable()) / (float) availableMinutesOverall;
             calDay.setPercentageAvailable(percentage);
         }
 
@@ -71,17 +70,24 @@ public class AppointmentFinder {
     }
 
     protected List<Event> makeAppointments(List<CalendarDay> availableDays, RecurringAction recurringAction) {
-        int overallPensumInMinutes = Math.round(recurringAction.getHoursPerWeek() * 60);
+        int overallPensumInMinutes = Math.round(recurringAction.getSettings().getHoursPerWeek() * 60);
         List<Event> eventList = new ArrayList<>();
-        for (CalendarDay day: availableDays) {
+        for (CalendarDay day : availableDays) {
             int pensumForDay = Math.round((overallPensumInMinutes * day.getPercentageAvailable()) / 10) * 10;
-            if (pensumForDay > recurringAction.getSettings().getMinimalDurationMinutes()) {
-                Calendar calendarSapce = freetimeCalculator.searchForSpace(recurringAction.getSettings(), day, pensumForDay);
-                if (calendarSapce != null) {
-                    Event event = EventFactory.createEvent(calendarSapce, pensumForDay, recurringAction.getTitle());
+            int actionDuration = Math.min(recurringAction.getSettings().getMaximalDurationMinutes(), pensumForDay);
+            while (pensumForDay > actionDuration && pensumForDay > recurringAction.getSettings().getMinimalDurationMinutes()) {
+
+                Calendar calendarSpace = freetimeCalculator.searchForSpace(recurringAction.getSettings(), day, actionDuration);
+                if (calendarSpace != null) {
+                    Event event = EventFactory.createEvent(calendarSpace, actionDuration, recurringAction.getTitle());
                     eventList.add(event);
+                    day.getEventList().add(event);
                 }
+
+                pensumForDay -= actionDuration;
+
             }
+
 
         }
 

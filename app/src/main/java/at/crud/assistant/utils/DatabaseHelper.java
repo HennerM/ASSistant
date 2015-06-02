@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 import at.crud.assistant.models.Event;
 import at.crud.assistant.models.RecurringAction;
+import at.crud.assistant.models.RecurringActionSettings;
 
 /**
  * Created by Markus on 22.02.2015.
@@ -20,9 +21,10 @@ import at.crud.assistant.models.RecurringAction;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "assistant.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private Dao<RecurringAction, Integer> recurringActionDao = null;
     private Dao<Event, String> eventDao = null;
+    private Dao<RecurringActionSettings, Integer> settingsDao = null;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,6 +36,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             Log.i(DatabaseHelper.class.getName(), "onCreate");
             TableUtils.createTable(connectionSource, RecurringAction.class);
             TableUtils.createTable(connectionSource, Event.class);
+            TableUtils.createTable(connectionSource, RecurringActionSettings.class);
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -47,6 +50,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             Log.i(DatabaseHelper.class.getName(), "onUpgrade");
             TableUtils.dropTable(connectionSource, RecurringAction.class, true);
             TableUtils.dropTable(connectionSource, Event.class, true);
+            TableUtils.dropTable(connectionSource, RecurringActionSettings.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(database, connectionSource);
         } catch (SQLException e) {
@@ -67,6 +71,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         super.close();
         recurringActionDao = null;
         eventDao = null;
+    }
+
+    public Dao<RecurringActionSettings, Integer> getSettingsDao() throws SQLException{
+        if (settingsDao == null) {
+            settingsDao = getDao(RecurringActionSettings.class);
+        }
+        return settingsDao;
     }
 
     public Dao<Event, String> getEventDao() throws SQLException{

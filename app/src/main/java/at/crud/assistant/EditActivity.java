@@ -3,12 +3,12 @@ package at.crud.assistant;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
@@ -18,11 +18,14 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.yahoo.mobile.client.android.util.RangeSeekBar;
+
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 
 import at.crud.assistant.models.RecurringAction;
+import at.crud.assistant.models.RecurringActionSettings;
 import at.crud.assistant.services.AppointmentWizard;
 import at.crud.assistant.utils.DatabaseHelper;
 
@@ -41,6 +44,7 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
     protected EditText etHours;
     protected RecurringAction recurringAction = null;
     private DatabaseHelper databaseHelper;
+    protected RangeSeekBar<Integer> minMaxSeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,30 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
         dateTextView = (TextView)findViewById(R.id.tvFirstDay);
         etTitle = (EditText)findViewById(R.id.etTitle);
         etHours = (EditText)findViewById(R.id.etHours);
+        minMaxSeekBar = (RangeSeekBar<Integer>)findViewById(R.id.minMaxDuration);
+        minMaxSeekBar.setNotifyWhileDragging(true);
+        etHours.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    float hoursPerWeek = Float.parseFloat(s.toString());
+                    int minutesPerWeek = Math.round(hoursPerWeek) * 60;
+                    minMaxSeekBar.setRangeValues(0, minutesPerWeek);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         if (recurringAction != null) {
             bindToView();
@@ -80,7 +108,12 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
         dateTextView.setText(DateFormat.getDateFormat(this).format(recurringAction.getFirstDay()));
         dateTextView.setOnClickListener(showDatePickerDialog);
         etTitle.setText(recurringAction.getTitle());
-        etHours.setText(Integer.toString(Math.round(recurringAction.getHoursPerWeek())));
+        etHours.setText(Integer.toString(Math.round(recurringAction.getSettings().getHoursPerWeek())));
+        int minutesPerWeek = Math.round(recurringAction.getSettings().getHoursPerWeek()) * 60;
+        minMaxSeekBar.setRangeValues(0, minutesPerWeek);
+        minMaxSeekBar.setSelectedMinValue(recurringAction.getSettings().getMinimalDurationMinutes());
+        minMaxSeekBar.setSelectedMaxValue(recurringAction.getSettings().getMaximalDurationMinutes());
+
     }
 
     private View.OnClickListener showDatePickerDialog = new View.OnClickListener() {
@@ -131,7 +164,10 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
     private boolean validateAndSave() {
         try {
             recurringAction.setTitle(etTitle.getText().toString());
-            recurringAction.setHoursPerWeek(Float.parseFloat(etHours.getText().toString()));
+            recurringAction.getSettings().setHoursPerWeek(Float.parseFloat(etHours.getText().toString()));
+            recurringAction.getSettings().setMinimalDurationMinutes(minMaxSeekBar.getSelectedMinValue());
+            recurringAction.getSettings().setMaximalDurationMinutes(minMaxSeekBar.getSelectedMaxValue());
+            databaseHelper.getSettingsDao().createOrUpdate(recurringAction.getSettings());
             databaseHelper.getRecurringActionDao().createOrUpdate(recurringAction);
 
             new Thread(new Runnable() {

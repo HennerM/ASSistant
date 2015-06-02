@@ -56,6 +56,7 @@ public class CalendarRepository {
             calendars = new String[0];
         }
         cursor.close();
+        calendarCursor = null;
         return calendars;
     }
 
@@ -74,6 +75,7 @@ public class CalendarRepository {
             calendarIds = new String[0];
         }
         cursor.close();
+        calendarCursor = null;
         return calendarIds;
     }
 

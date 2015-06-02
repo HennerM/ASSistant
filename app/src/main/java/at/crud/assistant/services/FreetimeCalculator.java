@@ -7,6 +7,7 @@ import java.util.List;
 import at.crud.assistant.models.CalendarDay;
 import at.crud.assistant.models.Event;
 import at.crud.assistant.models.RecurringAction;
+import at.crud.assistant.models.RecurringActionSettings;
 
 
 public class FreetimeCalculator {
@@ -24,7 +25,7 @@ public class FreetimeCalculator {
         return actualMinutes;
     }
 
-    public Calendar searchForSpace(RecurringAction.Settings settings, CalendarDay calDay, int spaceMinutes) {
+    public Calendar searchForSpace(RecurringActionSettings settings, CalendarDay calDay, int spaceMinutes) {
         if (spaceMinutes <= 0) {
             throw new InvalidParameterException("Space duration can't be <= 0");
         }

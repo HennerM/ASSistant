@@ -2,12 +2,13 @@ package at.crud.assistant.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
+@DatabaseTable
 public class RecurringAction {
 
     @DatabaseField(generatedId = true)
@@ -25,13 +26,12 @@ public class RecurringAction {
     @DatabaseField
     private Date lastDay;
 
-    @DatabaseField
-    private float hoursPerWeek;        // TODO hoursPerWeek refactoren
 
     @ForeignCollectionField
-    private Collection<Event> events;
+    private Collection<Event> events = new ArrayList<>();
 
-    private Settings settings = new Settings();
+    @DatabaseField( foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
+    private RecurringActionSettings settings = new RecurringActionSettings();
 
     public RecurringAction() {
         super();
@@ -41,7 +41,7 @@ public class RecurringAction {
     public RecurringAction(String title, Date firstDay, float hoursPerWeek) {
         this.title = title;
         this.firstDay = firstDay;
-        this.hoursPerWeek = hoursPerWeek;
+        this.settings.setHoursPerWeek(hoursPerWeek);
     }
 
     public String getTitle() {
@@ -76,67 +76,18 @@ public class RecurringAction {
         this.lastDay = lastDay;
     }
 
-    public float getHoursPerWeek() {
-        return hoursPerWeek;
-    }
-
-    public void setHoursPerWeek(float hoursPerWeek) {
-        this.hoursPerWeek = hoursPerWeek;
-    }
-
     public int getId() {
         return id;
     }
 
-    public Settings getSettings() {
+    public RecurringActionSettings getSettings() {
         return settings;
     }
 
-    public void setSettings(Settings settings) {
+    public void setSettings(RecurringActionSettings settings) {
         this.settings = settings;
     }
 
-    public static class Settings {
-
-        // TODO make customizeable settings
-
-        private int dayIntervall = 1;
-        private int casualDayStartTime = 480;
-        private int casualDayEndTime = 1200;
-        private int minimalDurationMinutes = 15;
-
-        public int getDayIntervall() {
-            return dayIntervall;
-        }
-
-        public void setDayIntervall(int dayIntervall) {
-            this.dayIntervall = dayIntervall;
-        }
-
-        public int getCasualDayStartTime() {
-            return casualDayStartTime;
-        }
-
-        public void setCasualDayStartTime(int casualDayStartTime) {
-            this.casualDayStartTime = casualDayStartTime;
-        }
-
-        public int getCasualDayEndTime() {
-            return casualDayEndTime;
-        }
-
-        public void setCasualDayEndTime(int casualDayEndTime) {
-            this.casualDayEndTime = casualDayEndTime;
-        }
-
-        public int getMinimalDurationMinutes() {
-            return minimalDurationMinutes;
-        }
-
-        public void setMinimalDurationMinutes(int minimalDurationMinutes) {
-            this.minimalDurationMinutes = minimalDurationMinutes;
-        }
-    }
 
     public Collection<Event> getEvents() {
         return events;
