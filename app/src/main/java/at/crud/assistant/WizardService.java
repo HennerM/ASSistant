@@ -10,7 +10,7 @@ import at.crud.assistant.services.AppointmentWizard;
 
 public class WizardService extends IntentService {
 
-    public static final long INTERVALL_SECONDS = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    public static final long INTERVALL_SECONDS = AlarmManager.INTERVAL_HALF_DAY;
 
     public WizardService() {
         super("WizardService");
