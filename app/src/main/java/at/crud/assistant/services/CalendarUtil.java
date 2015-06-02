@@ -32,4 +32,10 @@ public class CalendarUtil {
         return calendar;
     }
 
+    public static long getMilliSecondsSinceMidnight(Calendar calendar) {
+        Calendar midnight = (Calendar)calendar.clone();
+        setToMidnight(midnight);
+        return calendar.getTimeInMillis() - midnight.getTimeInMillis();
+    }
+
 }

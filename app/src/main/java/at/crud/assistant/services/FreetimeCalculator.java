@@ -12,6 +12,14 @@ import at.crud.assistant.models.RecurringActionSettings;
 
 public class FreetimeCalculator {
 
+    private long restTimeStart;
+    private long restTimeEnd;
+
+    public FreetimeCalculator(long restTimeStart, long restTimeEnd) {
+        this.restTimeStart = restTimeStart;
+        this.restTimeEnd = restTimeEnd;
+    }
+
     public int getFreeMinutes(List<Event> eventList) {
         int actualMinutes = 24 * 60;
         for (Event event : eventList) {
@@ -25,18 +33,18 @@ public class FreetimeCalculator {
         return actualMinutes;
     }
 
-    public Calendar searchForSpace(RecurringActionSettings settings, CalendarDay calDay, int spaceMinutes) {
+    public Calendar searchForSpace(CalendarDay calDay, int spaceMinutes) {
         if (spaceMinutes <= 0) {
             throw new InvalidParameterException("Space duration can't be <= 0");
         }
 
         Calendar calendarIterator = CalendarUtil.fromDate(calDay.getDate());
         CalendarUtil.setToMidnight(calendarIterator);
-        calendarIterator.add(Calendar.MINUTE, settings.getCasualDayStartTime());
+        calendarIterator.add(Calendar.SECOND, (int) restTimeEnd / 1000);
 
         Calendar dayEnd = CalendarUtil.fromDate(calDay.getDate());
         CalendarUtil.setToMidnight(dayEnd);
-        dayEnd.add(Calendar.MINUTE, settings.getCasualDayEndTime());
+        dayEnd.add(Calendar.SECOND, (int)restTimeStart / 1000);
 
         while (calendarIterator.before(dayEnd)) {
             Calendar calendarIteratorEnd = (Calendar) calendarIterator.clone();

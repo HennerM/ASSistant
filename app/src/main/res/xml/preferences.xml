@@ -9,6 +9,16 @@
             android:title="@string/pref_title_relevant_calendars"
             android:summary="@string/pref_summary_relevant_calendars"/>
 
+        <at.crud.assistant.utils.TimePreference
+            android:key="pref_resttime_start"
+            android:title="Ruhezeit Beginn"
+            android:summary="Wann ist der Beginn der Ruhezeit" />
+
+        <at.crud.assistant.utils.TimePreference
+            android:key="pref_resttime_end"
+            android:title="Ruhezeit Ende"
+            android:summary="Wann ist das Ende der Ruhezeit" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

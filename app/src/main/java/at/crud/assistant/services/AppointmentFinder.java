@@ -1,7 +1,5 @@
 package at.crud.assistant.services;
 
-import android.net.Uri;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -77,7 +75,7 @@ public class AppointmentFinder {
             int actionDuration = Math.min(recurringAction.getSettings().getMaximalDurationMinutes(), pensumForDay);
             while (pensumForDay > actionDuration && pensumForDay > recurringAction.getSettings().getMinimalDurationMinutes()) {
 
-                Calendar calendarSpace = freetimeCalculator.searchForSpace(recurringAction.getSettings(), day, actionDuration);
+                Calendar calendarSpace = freetimeCalculator.searchForSpace(day, actionDuration);
                 if (calendarSpace != null) {
                     Event event = EventFactory.createEvent(calendarSpace, actionDuration, recurringAction.getTitle());
                     eventList.add(event);

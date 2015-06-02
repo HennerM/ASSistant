@@ -43,12 +43,15 @@ public class AppointmentWizard {
     private EventRepository eventRepository;
     private Dao<Event, String> eventDao;
     private Dao<RecurringAction, Integer> recurringActionDao;
+    private SharedPreferences sharedPref;
 
     public AppointmentWizard(Context context) {
         this.context = context;
         ContentResolver contentResolver = context.getContentResolver();
         eventRepository = new EventRepository(contentResolver, new CalendarRepository(contentResolver));
-        FreetimeCalculator freetimeCalculator = new FreetimeCalculator();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        FreetimeCalculator freetimeCalculator = new FreetimeCalculator(sharedPref.getLong("pref_resttime_start", SettingsFragment.PREFERENCE_RESTTIME_START_DEFAULT),
+                sharedPref.getLong("pref_resttime_end", SettingsFragment.PREFERENCE_RESTTIME_END_DEFAULT));
         appointmentFinder = new AppointmentFinder(getCalendarIds(), eventRepository, freetimeCalculator);
         databaseHelper = new DatabaseHelper(context);
         try {
@@ -60,7 +63,6 @@ public class AppointmentWizard {
     }
 
     protected String[] getCalendarIds() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> calendarPreference = sharedPref.getStringSet(SettingsFragment.PREFERENCE_KEY_RELEVANT_CALENDARS, new HashSet<String>(0));
         if (calendarPreference == null) {
             return new String[0];
