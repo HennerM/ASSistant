@@ -75,7 +75,7 @@ public class AppointmentFinder {
         for (CalendarDay day : availableDays) {
             int pensumForDay = Math.round((overallPensumInMinutes * day.getPercentageAvailable()) / 10) * 10;
             int actionDuration = Math.min(recurringAction.getSettings().getMaximalDurationMinutes(), pensumForDay);
-            while (pensumForDay > actionDuration && pensumForDay > recurringAction.getSettings().getMinimalDurationMinutes()) {
+            while (actionDuration <= pensumForDay && pensumForDay > recurringAction.getSettings().getMinimalDurationMinutes()) {
 
                 Calendar calendarSpace = freetimeCalculator.searchForSpace(recurringAction.getSettings(), day, actionDuration);
                 if (calendarSpace != null) {

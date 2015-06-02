@@ -1,5 +1,7 @@
 package at.crud.assistant.services;
 
+import android.provider.CalendarContract;
+
 import java.security.InvalidParameterException;
 import java.util.Calendar;
 import java.util.List;
@@ -15,12 +17,14 @@ public class FreetimeCalculator {
     public int getFreeMinutes(List<Event> eventList) {
         int actualMinutes = 24 * 60;
         for (Event event : eventList) {
-            if (event.isAllDay()) {
+            if (event.isAllDay() && event.getAvailability() == CalendarContract.Events.AVAILABILITY_BUSY) {
                 return 0;
             }
-            long deltaMilliSeconds = event.getEnd().getTime() - event.getStart().getTime();
-            int deltaMinutes = (int) (deltaMilliSeconds / 1000 / 60);
-            actualMinutes = actualMinutes - deltaMinutes;
+            if (event.getAvailability() == CalendarContract.Events.AVAILABILITY_BUSY) {
+                long deltaMilliSeconds = event.getEnd().getTime() - event.getStart().getTime();
+                int deltaMinutes = (int) (deltaMilliSeconds / 1000 / 60);
+                actualMinutes = actualMinutes - deltaMinutes;
+            }
         }
         return actualMinutes;
     }
@@ -45,9 +49,10 @@ public class FreetimeCalculator {
             boolean overlapping = false;
             if (calDay.getEventList().size() > 0) {
                 for (Event event : calDay.getEventList()) {
-                    overlapping = overlapping || CalendarUtil.overlapping(calendarIterator, calendarIteratorEnd,
-                            CalendarUtil.fromDate(event.getStart()), CalendarUtil.fromDate(event.getEnd()));
-
+                    if (event.getAvailability() == CalendarContract.Events.AVAILABILITY_BUSY) {
+                        overlapping = overlapping || CalendarUtil.overlapping(calendarIterator, calendarIteratorEnd,
+                                CalendarUtil.fromDate(event.getStart()), CalendarUtil.fromDate(event.getEnd()));
+                    }
                 }
             }
 

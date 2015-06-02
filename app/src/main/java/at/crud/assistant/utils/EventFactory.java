@@ -2,10 +2,14 @@ package at.crud.assistant.utils;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import java.util.Calendar;
+import java.util.Date;
 
 import at.crud.assistant.models.Event;
 
@@ -13,6 +17,8 @@ import at.crud.assistant.models.Event;
  * Created by Markus on 03.03.2015.
  */
 public class EventFactory {
+
+
 
     public static Event createEvent(Calendar start, int durationMinutes, String title) {
         Event event = new Event();
@@ -36,6 +42,23 @@ public class EventFactory {
         values.put(CalendarContract.Events.CUSTOM_APP_URI, uri.toString());
         values.put(CalendarContract.Events.DESCRIPTION, "auto generated reccuring event");
         return values;
+    }
+
+    public static Event createFromCursor(Cursor cursor) {
+        Event event = new Event();
+        event.setTitle(cursor.getString(EventRepository.PROJECTION_TITLE));
+
+        event.setAllDay(cursor.getInt(EventRepository.PROJECTION_ALL_DAY) != 0);
+        event.setAvailability(cursor.getInt(EventRepository.PROJECTION_AVAILABILITY));
+        if (event.isAllDay()) {
+            event.setStart(new Date(cursor.getLong(EventRepository.PROJECTION_START)));
+            event.setEnd(new Date(cursor.getLong(EventRepository.PROJECTION_START)));
+        } else {
+            event.setStart(new Date(cursor.getLong(EventRepository.PROJECTION_START)));
+            event.setEnd(new Date(cursor.getLong(EventRepository.PROJECTION_END)));
+        }
+
+        return event;
     }
 
 }

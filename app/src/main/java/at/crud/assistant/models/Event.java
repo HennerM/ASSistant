@@ -20,6 +20,8 @@ public class Event {
 
     protected boolean allDay;
 
+    protected int availability;
+
     @DatabaseField( foreign = true )
     private RecurringAction recurringAction;
 
@@ -69,6 +71,14 @@ public class Event {
 
     public void setRecurringAction(RecurringAction recurringAction) {
         this.recurringAction = recurringAction;
+    }
+
+    public int getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(int availability) {
+        this.availability = availability;
     }
 
     @Override
