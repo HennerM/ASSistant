@@ -52,7 +52,7 @@ public class AppointmentFinder {
             cDay.setDate(new Date(cIterator.getTimeInMillis()));
             List<Event> eventList = eventRepository.findEventsForDay(calendarIds, cIterator);
             cDay.setEventList(eventList);
-            int minutes = freetimeCalculator.getFreeMinutes(eventList);
+            int minutes = freetimeCalculator.getFreeMinutes(cDay.getDate(), eventList);
             if (minutes > 0) {
                 availableMinutesOverall += minutes;
                 cDay.setMinutesAvailable(minutes);

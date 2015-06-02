@@ -50,13 +50,8 @@ public class EventFactory {
 
         event.setAllDay(cursor.getInt(EventRepository.PROJECTION_ALL_DAY) != 0);
         event.setAvailability(cursor.getInt(EventRepository.PROJECTION_AVAILABILITY));
-        if (event.isAllDay()) {
-            event.setStart(new Date(cursor.getLong(EventRepository.PROJECTION_START)));
-            event.setEnd(new Date(cursor.getLong(EventRepository.PROJECTION_START)));
-        } else {
-            event.setStart(new Date(cursor.getLong(EventRepository.PROJECTION_START)));
-            event.setEnd(new Date(cursor.getLong(EventRepository.PROJECTION_END)));
-        }
+        event.setStart(new Date(cursor.getLong(EventRepository.PROJECTION_START)));
+        event.setEnd(new Date(cursor.getLong(EventRepository.PROJECTION_END)));
 
         return event;
     }

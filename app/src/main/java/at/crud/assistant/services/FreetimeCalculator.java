@@ -4,6 +4,7 @@ import android.provider.CalendarContract;
 
 import java.security.InvalidParameterException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import at.crud.assistant.models.CalendarDay;
@@ -14,14 +15,18 @@ import at.crud.assistant.models.RecurringActionSettings;
 
 public class FreetimeCalculator {
 
-    public int getFreeMinutes(List<Event> eventList) {
+    public int getFreeMinutes(Date day, List<Event> eventList) {
         int actualMinutes = 24 * 60;
+        Calendar calStart = CalendarUtil.fromDate(day);
+        CalendarUtil.setToMidnight(calStart);
+        long dayStart = calStart.getTimeInMillis();
+        calStart.add(Calendar.DATE, 1);
+        long dayEnd = calStart.getTimeInMillis();
         for (Event event : eventList) {
-            if (event.isAllDay() && event.getAvailability() == CalendarContract.Events.AVAILABILITY_BUSY) {
-                return 0;
-            }
             if (event.getAvailability() == CalendarContract.Events.AVAILABILITY_BUSY) {
-                long deltaMilliSeconds = event.getEnd().getTime() - event.getStart().getTime();
+                long startTime = Math.max(dayStart, event.getStart().getTime());
+                long endTime = Math.min(dayEnd, event.getEnd().getTime());
+                long deltaMilliSeconds = endTime -startTime;
                 int deltaMinutes = (int) (deltaMilliSeconds / 1000 / 60);
                 actualMinutes = actualMinutes - deltaMinutes;
             }
