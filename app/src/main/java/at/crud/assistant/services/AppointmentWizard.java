@@ -1,10 +1,12 @@
 package at.crud.assistant.services;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -21,6 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import at.crud.assistant.EventsActivity;
+import at.crud.assistant.MainActivity;
 import at.crud.assistant.R;
 import at.crud.assistant.SettingsFragment;
 import at.crud.assistant.models.Event;
@@ -121,16 +125,26 @@ public class AppointmentWizard {
             nrOfAppointments += createAppointmentsForTimeSpan(recurringAction, startDate, endDate);
         }
 
+        notifyUser(nrOfAppointments);
+
+        databaseHelper.close();
+    }
+
+    private void notifyUser(int nrOfAppointments) {
+        Resources res = context.getResources();
+        String contentText = res.getQuantityString(R.plurals.notifaction_created_content, nrOfAppointments, nrOfAppointments);
+        Intent resultIntent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Termine erstellt")
-                        .setContentText("es wurden " + nrOfAppointments + " neue Termine erstellt!");
+                        .setContentTitle(context.getString(R.string.notification_appointments_created))
+                        .setContentText(contentText)
+                        .setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(WIZARD_NOTIFICATION, mBuilder.build());
-        databaseHelper.close();
     }
 
     public void refreshAllActions() {

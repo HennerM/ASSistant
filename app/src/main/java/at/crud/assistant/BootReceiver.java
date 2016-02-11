@@ -27,14 +27,12 @@ public class BootReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.BOOT_completed")) {
             Log.d(this.getClass().toString(), "BOOT_completed received");
             AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-            Intent receiverIntent = new Intent(context, BootReceiver.class);
-            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_ALARM, receiverIntent, 0);
+            Intent wizardIntent = new Intent(context, WizardService.class);
+            PendingIntent pendingIntent = PendingIntent.getService(context, REQUEST_CODE_ALARM, wizardIntent, 0);
             alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    0,
-                    AlarmManager.INTERVAL_FIFTEEN_MINUTES, alarmIntent);
+                    WizardService.INTERVALL_SECONDS,
+                    WizardService.INTERVALL_SECONDS, pendingIntent);
+            context.startService(wizardIntent);
         }
-
-        Intent wizardIntent = new Intent(context, WizardService.class);
-        context.startService(wizardIntent);
     }
 }

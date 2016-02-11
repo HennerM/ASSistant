@@ -13,4 +13,9 @@
     <string name="pref_summary_relevant_calendars">which calendars are relevant for generating the appointments</string>
     <string name="default_preferences">pref_default</string>
     <string name="ui_action_minMaxDuration">minimal and maximal duration of action</string>
+    <string name="notification_appointments_created">Termine erstellt</string>
+    <plurals name="notifaction_created_content">
+        <item quantity="one">%d Termin erstellt</item>
+        <item quantity="other">%d Termine erstellt</item>
+    </plurals>
 </resources>

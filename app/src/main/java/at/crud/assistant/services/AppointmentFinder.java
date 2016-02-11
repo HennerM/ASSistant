@@ -50,7 +50,7 @@ public class AppointmentFinder {
             cDay.setDate(new Date(cIterator.getTimeInMillis()));
             List<Event> eventList = eventRepository.findEventsForDay(calendarIds, cIterator);
             cDay.setEventList(eventList);
-            int minutes = freetimeCalculator.getFreeMinutes(eventList);
+            int minutes = freetimeCalculator.getFreeMinutes(cDay.getDate(), eventList);
             if (minutes > 0) {
                 availableMinutesOverall += minutes;
                 cDay.setMinutesAvailable(minutes);
@@ -73,7 +73,7 @@ public class AppointmentFinder {
         for (CalendarDay day : availableDays) {
             int pensumForDay = Math.round((overallPensumInMinutes * day.getPercentageAvailable()) / 10) * 10;
             int actionDuration = Math.min(recurringAction.getSettings().getMaximalDurationMinutes(), pensumForDay);
-            while (pensumForDay > actionDuration && pensumForDay > recurringAction.getSettings().getMinimalDurationMinutes()) {
+            while (actionDuration <= pensumForDay && pensumForDay > recurringAction.getSettings().getMinimalDurationMinutes()) {
 
                 Calendar calendarSpace = freetimeCalculator.searchForSpace(day, actionDuration);
                 if (calendarSpace != null) {

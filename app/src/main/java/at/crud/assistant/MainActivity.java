@@ -1,7 +1,10 @@
 package at.crud.assistant;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -109,6 +112,8 @@ public class MainActivity extends ActionBarActivity {
                 recurringActionList = databaseHelper.getRecurringActionDao().queryForAll();
                 if (recurringActionList.size() > 0) {
                     enableReceiver();
+                } else {
+                    disableReceiver();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -127,9 +132,8 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public void onClick(View v, RecurringAction element) {
-            RecurringAction recurringAction = element;
             Intent intent = new Intent(getActivity(), EventsActivity.class);
-            intent.putExtra(EventsActivity.INTENT_EXTRA_RECURRING_ACTION_ID, recurringAction.getId());
+            intent.putExtra(EventsActivity.INTENT_EXTRA_RECURRING_ACTION_ID, element.getId());
             getActivity().startActivityForResult(intent, EventsActivity.VIEW_REQUEST_CODE);
         }
 
@@ -139,6 +143,14 @@ public class MainActivity extends ActionBarActivity {
             pm.setComponentEnabledSetting(receiver,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
+
+            Intent wizardIntent = new Intent(getActivity(), WizardService.class);
+            PendingIntent pendingIntent = PendingIntent.getService(getActivity(), BootReceiver.REQUEST_CODE_ALARM, wizardIntent, 0);
+            AlarmManager alarmMgr = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+            alarmMgr.cancel(pendingIntent);
+            alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    WizardService.INTERVALL_SECONDS,
+                    WizardService.INTERVALL_SECONDS, pendingIntent);
         }
 
         private void disableReceiver() {

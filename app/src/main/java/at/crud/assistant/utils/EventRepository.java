@@ -30,11 +30,17 @@ public class EventRepository {
             CalendarContract.Events.TITLE,
             CalendarContract.Events.DTSTART,
             CalendarContract.Events.DTEND,
+            CalendarContract.Events.ALL_DAY,
+            CalendarContract.Events.AVAILABILITY
     };
-    private static final int PROJECTION_ID_INDEX = 0;
-    private static final int PROJECTION_TITLE = 1;
-    private static final int PROJECTION_START = 2;
-    private static final int PROJECTION_END = 3;
+
+    public static final int PROJECTION_ID_INDEX = 0;
+    public static final int PROJECTION_TITLE = 1;
+    public static final int PROJECTION_START = 2;
+    public static final int PROJECTION_END = 3;
+    public static final int PROJECTION_ALL_DAY = 4;
+    public static final int PROJECTION_AVAILABILITY = 5;
+
     private static final Uri CONTENT_URI = CalendarContract.Events.CONTENT_URI;
 
 
@@ -91,11 +97,7 @@ public class EventRepository {
         if (cursor.getCount() > 0) {
             eventList = new ArrayList<>();
             while (cursor.moveToNext()) {
-                Event event = new Event();
-                event.setTitle(cursor.getString(PROJECTION_TITLE));
-
-                event.setStart(new Date(cursor.getLong(PROJECTION_START)));
-                event.setEnd(new Date(cursor.getLong(PROJECTION_END)));
+                Event event = EventFactory.createFromCursor(cursor);
                 eventList.add(event);
             }
         } else {
