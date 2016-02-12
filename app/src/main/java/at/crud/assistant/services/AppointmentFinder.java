@@ -9,6 +9,7 @@ import java.util.List;
 import at.crud.assistant.models.CalendarDay;
 import at.crud.assistant.models.Event;
 import at.crud.assistant.models.RecurringAction;
+import at.crud.assistant.models.RecurringActionSettings;
 import at.crud.assistant.utils.EventFactory;
 import at.crud.assistant.utils.EventRepository;
 
@@ -68,24 +69,28 @@ public class AppointmentFinder {
     }
 
     protected List<Event> makeAppointments(List<CalendarDay> availableDays, RecurringAction recurringAction) {
-        int overallPensumInMinutes = Math.round(recurringAction.getSettings().getHoursPerWeek() * 60);
+        RecurringActionSettings settings = recurringAction.getSettings();
+        int overallPensumInMinutes = Math.round(settings.getHoursPerWeek() * 60);
+        int optimumDuration = Math.round((settings.getMinimalDurationMinutes() + settings.getMaximalDurationMinutes()) / 20) * 10;
+        int optimumCount = Math.round(overallPensumInMinutes / optimumDuration);
+        float eventsPerDay = (float)optimumCount / availableDays.size();
+        float eventCountForNextDay = eventsPerDay + 1.0f;
+
         List<Event> eventList = new ArrayList<>();
         for (CalendarDay day : availableDays) {
-            int pensumForDay = Math.round((overallPensumInMinutes * day.getPercentageAvailable()) / 10) * 10;
-            int actionDuration = Math.min(recurringAction.getSettings().getMaximalDurationMinutes(), pensumForDay);
-            while (actionDuration <= pensumForDay && pensumForDay > recurringAction.getSettings().getMinimalDurationMinutes()) {
+            int actionDuration = Math.min(optimumDuration, overallPensumInMinutes);
 
+            while (overallPensumInMinutes >settings.getMinimalDurationMinutes() && eventCountForNextDay > 1.0f) {
                 Calendar calendarSpace = freetimeCalculator.searchForSpace(day, actionDuration);
                 if (calendarSpace != null) {
                     Event event = EventFactory.createEvent(calendarSpace, actionDuration, recurringAction.getTitle());
                     eventList.add(event);
                     day.getEventList().add(event);
+                    overallPensumInMinutes -= actionDuration;
+                    eventCountForNextDay -= 1.0f;
                 }
-
-                pensumForDay -= actionDuration;
-
             }
-
+            eventCountForNextDay = eventCountForNextDay + eventsPerDay;
 
         }
 
