@@ -15,6 +15,8 @@ import at.crud.assistant.models.RecurringActionSettings;
 
 public class FreetimeCalculator {
 
+    private final static int ACTIVITY_PUFFER = 5;
+
     private long restTimeStart;
     private long restTimeEnd;
 
@@ -38,9 +40,6 @@ public class FreetimeCalculator {
                 int deltaMinutes = (int) (deltaMilliSeconds / 1000 / 60);
                 actualMinutes = actualMinutes - deltaMinutes;
             }
-            long deltaMilliSeconds = event.getEnd().getTime() - event.getStart().getTime();
-            int deltaMinutes = (int) (deltaMilliSeconds / 1000 / 60);
-            actualMinutes = actualMinutes - deltaMinutes;
         }
         return actualMinutes;
     }
@@ -76,7 +75,7 @@ public class FreetimeCalculator {
                 return calendarIterator;
             }
 
-            calendarIterator.add(Calendar.MINUTE, spaceMinutes);
+            calendarIterator.add(Calendar.MINUTE, spaceMinutes + ACTIVITY_PUFFER);
         }
         return null;
 

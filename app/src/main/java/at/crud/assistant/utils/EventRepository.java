@@ -88,7 +88,8 @@ public class EventRepository {
         arguments.add(String.valueOf(startDate.getTime()));
         arguments.add(String.valueOf(endDate.getTime()));
 
-        Cursor eventCursor = cr.query(CONTENT_URI, EVENT_PROJECTION, selection.toString(), arguments.toArray(new String[arguments.size()]), null);
+        Cursor eventCursor = cr.query(CONTENT_URI, EVENT_PROJECTION, selection.toString(),
+                arguments.toArray(new String[arguments.size()]), CalendarContract.Events.DTSTART + " ASC");
         return getListFromCursor(eventCursor);
     }
 
