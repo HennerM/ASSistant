@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -25,13 +27,14 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_completed")) {
-            Log.d(this.getClass().toString(), "BOOT_completed received");
+            Log.d("WizardService", "BOOT_completed received at:" +  new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
             AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
             Intent wizardIntent = new Intent(context, WizardService.class);
             PendingIntent pendingIntent = PendingIntent.getService(context, REQUEST_CODE_ALARM, wizardIntent, 0);
-            alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                     WizardService.INTERVALL_SECONDS,
                     WizardService.INTERVALL_SECONDS, pendingIntent);
+            Log.d("WizardService", "Alarm set");
             context.startService(wizardIntent);
         }
     }
