@@ -174,7 +174,11 @@ public class EditActivity extends ActionBarActivity implements DatePickerDialog.
                 @Override
                 public void run() {
                     AppointmentWizard ap = new AppointmentWizard(EditActivity.this);
-                    ap.refreshAction(recurringAction);
+                    try {
+                        ap.refreshAction(recurringAction);
+                    } catch (SecurityException e) {
+                        Log.e("ASSistant", "can't refresh action", e);
+                    }
                 }
             }).run();
 

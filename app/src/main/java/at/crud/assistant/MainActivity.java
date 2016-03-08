@@ -1,5 +1,6 @@
 package at.crud.assistant;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.PendingIntent;
@@ -9,6 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.security.Permission;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +35,8 @@ import at.crud.assistant.utils.RecurringActionAdapter;
 
 public class MainActivity extends ActionBarActivity {
 
+    public final static int CALENDAR_WRITE_PERMISSION_REQUEST = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +46,30 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new ListFragment(), "list")
                     .commit();
         }
+
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_CALENDAR)
+            != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CALENDAR)) {
+                // TODO
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR},
+                        CALENDAR_WRITE_PERMISSION_REQUEST);
+            }
+        }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == CALENDAR_WRITE_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                Toast.makeText(this, "Ohne diese Berechtigung kann die App nicht korrekt ausgeführt werden",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
